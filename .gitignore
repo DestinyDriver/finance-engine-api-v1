@@ -11,3 +11,4 @@ coverage/
 .README.md
 .DEPLOYMENT.md
 *.md
+*.txt
