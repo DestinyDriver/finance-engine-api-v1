@@ -22,22 +22,20 @@ COPY . .
 FROM node:20-slim AS production
 WORKDIR /app
 
-# Security: don't run as root
-RUN addgroup -g 1001 -S nodejs && \
-    adduser -S nodejs -u 1001
+# Use the built-in non-root node user from the official image
 
 # Copy built artifacts
-COPY --from=deps --chown=nodejs:nodejs /app/node_modules ./node_modules
-COPY --from=builder --chown=nodejs:nodejs /app/node_modules/.prisma ./node_modules/.prisma
-COPY --from=builder --chown=nodejs:nodejs /app/node_modules/prisma ./node_modules/prisma
-COPY --from=builder --chown=nodejs:nodejs /app/node_modules/.bin/prisma ./node_modules/.bin/prisma
-COPY --chown=nodejs:nodejs . .
+COPY --from=deps --chown=node:node /app/node_modules ./node_modules
+COPY --from=builder --chown=node:node /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder --chown=node:node /app/node_modules/prisma ./node_modules/prisma
+COPY --from=builder --chown=node:node /app/node_modules/.bin/prisma ./node_modules/.bin/prisma
+COPY --chown=node:node . .
 
 # Create logs directory
-RUN mkdir -p logs && chown -R nodejs:nodejs logs
+RUN mkdir -p logs && chown -R node:node logs
 
 # Switch to non-root user
-USER nodejs
+USER node
 
 EXPOSE 3000
 
