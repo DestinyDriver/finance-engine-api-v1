@@ -38,11 +38,8 @@ const transports = [
     level: "error",
     format: fileFormat,
   }),
+  new winston.transports.Console({ format: consoleFormat }),
 ];
-
-if (nodeEnv !== "production") {
-  transports.push(new winston.transports.Console({ format: consoleFormat }));
-}
 
 const logger = winston.createLogger({
   level: logLevel,

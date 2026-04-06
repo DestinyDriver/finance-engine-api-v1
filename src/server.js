@@ -7,6 +7,8 @@ const { closeRedis } = require("./utils/redis");
 const { startJobs, stopJobs } = require("./jobs/cleanup");
 const logger = require("./utils/logger");
 
+console.log("Starting Finance Dashboard API...");
+
 const PORT = parseInt(process.env.PORT || 3000);
 
 let server;
