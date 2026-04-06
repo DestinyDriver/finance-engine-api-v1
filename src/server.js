@@ -1,4 +1,3 @@
-// src/server.js
 require("dotenv").config();
 
 const app = require("./app");
@@ -15,15 +14,11 @@ let server;
 
 const startServer = async () => {
   try {
-    // Connect to PostgreSQL
     await connectDatabase();
-
-    // Start background cron jobs
     startJobs();
 
-    // Start HTTP server
     server = app.listen(PORT, () => {
-      logger.info(`🚀 Finance Dashboard API running`, {
+      logger.info(`⚡ API Started`, {
         port: PORT,
         env: process.env.NODE_ENV,
         docs: `http://localhost:${PORT}/api-docs`,
@@ -41,9 +36,6 @@ const startServer = async () => {
   }
 };
 
-/**
- * Graceful shutdown — close connections cleanly
- */
 const shutdown = async (signal) => {
   logger.info(`Received ${signal}, shutting down gracefully...`);
 
@@ -63,19 +55,15 @@ const shutdown = async (signal) => {
       }
     });
 
-    // Force exit after 15 seconds if graceful shutdown hangs
     setTimeout(() => {
       logger.error("Forced shutdown after timeout");
       process.exit(1);
     }, 15000);
   }
 };
-
-// Handle termination signals
 process.on("SIGTERM", () => shutdown("SIGTERM"));
 process.on("SIGINT", () => shutdown("SIGINT"));
 
-// Handle uncaught exceptions and unhandled rejections
 process.on("uncaughtException", (err) => {
   logger.error("Uncaught Exception", { error: err.message, stack: err.stack });
   shutdown("uncaughtException");

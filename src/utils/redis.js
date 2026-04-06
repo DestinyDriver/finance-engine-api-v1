@@ -6,7 +6,6 @@ let redisClient;
 
 const createRedisClient = () => {
   const client = new Redis(redisUrl, {
-    password: redisPassword || undefined,
     maxRetriesPerRequest: 3,
     enableReadyCheck: true,
     retryStrategy: (times) => {
@@ -96,7 +95,7 @@ const invalidatePattern = async (pattern) => {
 };
 
 module.exports = {
-  redis: getRedis(),
+  redis: getRedis,
   getRedis,
   closeRedis,
   cacheSet,
