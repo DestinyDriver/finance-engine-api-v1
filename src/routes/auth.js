@@ -1,4 +1,3 @@
-// src/routes/auth.js
 const express = require("express");
 const { validationResult } = require("express-validator");
 const authController = require("../controllers/authController");

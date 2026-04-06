@@ -1,4 +1,3 @@
-// src/controllers/dashboardController.js
 const dashboardService = require("../services/dashboardService");
 const response = require("../utils/response");
 

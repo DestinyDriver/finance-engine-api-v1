@@ -1,4 +1,3 @@
-// src/services/authService.js
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const { v4: uuidv4 } = require("uuid");
@@ -26,9 +25,7 @@ const generateAccessToken = (user) => {
   );
 };
 
-/**
- * Generate a refresh token (long-lived, stored in DB)
- */
+// Generate a signed refresh token
 const generateRefreshToken = () => {
   return jwt.sign(
     { jti: uuidv4(), type: "refresh" },
@@ -37,9 +34,8 @@ const generateRefreshToken = () => {
   );
 };
 
-/**
- * Register a new user
- */
+// Register a new user
+
 const register = async ({
   email,
   password,
@@ -87,9 +83,8 @@ const register = async ({
   return user;
 };
 
-/**
- * Login and issue token pair
- */
+//  * Login and issue token pair
+
 const login = async ({ email, password }) => {
   const user = await prisma.user.findUnique({
     where: { email },
@@ -156,9 +151,8 @@ const login = async ({ email, password }) => {
   return { accessToken, refreshToken, user: userWithoutPassword };
 };
 
-/**
- * Refresh access token using a valid refresh token
- */
+//  *Refresh access token using a valid refresh token
+
 const refresh = async (refreshToken) => {
   let decoded;
   try {
@@ -222,9 +216,8 @@ const refresh = async (refreshToken) => {
   return { accessToken: newAccessToken, refreshToken: newRefreshToken };
 };
 
-/**
- * Logout — blacklist access token, revoke refresh token
- */
+//  * Logout — blacklist access token, revoke refresh token
+
 const logout = async (accessToken, refreshToken, userId) => {
   // Blacklist access token until it expires
   try {
@@ -251,9 +244,8 @@ const logout = async (accessToken, refreshToken, userId) => {
   logger.info("User logged out", { userId });
 };
 
-/**
- * Change password
- */
+//  * Change password
+
 const changePassword = async (userId, currentPassword, newPassword) => {
   const user = await prisma.user.findUnique({ where: { id: userId } });
   const valid = await bcrypt.compare(currentPassword, user.password);

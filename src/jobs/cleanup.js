@@ -1,4 +1,3 @@
-// src/jobs/cleanup.js
 const cron = require("node-cron");
 const { prisma } = require("../utils/database");
 const { redis } = require("../utils/redis");

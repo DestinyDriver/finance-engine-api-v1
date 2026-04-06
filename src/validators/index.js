@@ -1,7 +1,6 @@
 // src/validators/index.js
 const { body, query, param } = require("express-validator");
 
-// ─── Auth ────────────────────────────────────────────────────────────────────
 const registerValidator = [
   body("email").isEmail().normalizeEmail().withMessage("Valid email required"),
   body("password")
@@ -45,7 +44,7 @@ const changePasswordValidator = [
     ),
 ];
 
-// ─── Users ────────────────────────────────────────────────────────────────────
+// Users
 const updateUserValidator = [
   param("id").isUUID().withMessage("Invalid user ID"),
   body("firstName").optional().trim().isLength({ min: 1, max: 50 }),
@@ -79,7 +78,7 @@ const userListValidator = [
   query("sortOrder").optional().isIn(["asc", "desc"]),
 ];
 
-// ─── Transactions ────────────────────────────────────────────────────────────
+//Transactions
 const createTransactionValidator = [
   body("amount")
     .isFloat({ min: 0.01 })
@@ -119,7 +118,7 @@ const transactionListValidator = [
   query("sortOrder").optional().isIn(["asc", "desc"]),
 ];
 
-// ─── Dashboard ────────────────────────────────────────────────────────────────
+//Dashboard
 const dateRangeValidator = [
   query("dateFrom")
     .optional()
@@ -142,7 +141,7 @@ const weeksValidator = [
     .withMessage("weeks must be 1-52"),
 ];
 
-// ─── Categories ───────────────────────────────────────────────────────────────
+// ─── Categories
 const createCategoryValidator = [
   body("name")
     .trim()
