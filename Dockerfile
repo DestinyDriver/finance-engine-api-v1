@@ -22,6 +22,9 @@ COPY . .
 FROM node:20-slim AS production
 WORKDIR /app
 
+# Install OpenSSL for Prisma
+RUN apt-get update -y && apt-get install -y openssl
+
 # Use the built-in non-root node user from the official image
 
 # Copy built artifacts
