@@ -1,0 +1,97 @@
+version: "3.9"
+
+services:
+  # ─── PostgreSQL Database ────────────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: finance_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: financeuser
+      POSTGRES_PASSWORD: financepass
+      POSTGRES_DB: financedb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U financeuser -d financedb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - finance_net
+
+  # ─── Redis Cache ────────────────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: finance_redis
+    restart: unless-stopped
+    command: >
+      redis-server
+      --maxmemory 256mb
+      --maxmemory-policy allkeys-lru
+      --save 60 1
+      --loglevel warning
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      - finance_net
+
+  # ─── API Application ────────────────────────────────────────────────────────
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: finance_api
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://financeuser:financepass@postgres:5432/financedb?schema=public
+      REDIS_URL: redis://redis:6379
+      NODE_ENV: production
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./logs:/app/logs
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--quiet",
+          "--tries=1",
+          "--spider",
+          "http://localhost:3000/health",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - finance_net
+
+volumes:
+  postgres_data:
+    name: finance_postgres_data
+  redis_data:
+    name: finance_redis_data
+
+networks:
+  finance_net:
+    name: finance_network
+    driver: bridge
