@@ -8,8 +8,4 @@ pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 coverage/
-.README.md
-.DEPLOYMENT.md
-*.md
-*.txt
-./Code.txt
+Code.txt
