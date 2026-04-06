@@ -44,18 +44,15 @@ app.use(
   }),
 );
 
-// ─── Core Middleware ──────────────────────────────────────────────────────────
 app.use(compression());
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use(requestId);
 app.use(requestLogger);
 
-// ─── Rate Limiting ────────────────────────────────────────────────────────────
 const API_VERSION = process.env.API_VERSION || "v1";
 app.use(`/api/${API_VERSION}`, apiLimiter);
 
-// ─── Health Check ─────────────────────────────────────────────────────────────
 app.get("/health", (req, res) => {
   res.json({
     status: "healthy",
@@ -69,7 +66,8 @@ app.get("/health", (req, res) => {
 
 app.get("/health/ready", async (req, res) => {
   const { prisma } = require("./utils/database");
-  const redis = require("./utils/redis");
+  const { getRedis } = require("./utils/redis");
+  const redis = getRedis();
   const checks = {};
 
   try {
@@ -94,7 +92,6 @@ app.get("/health/ready", async (req, res) => {
   });
 });
 
-// ─── API Docs ─────────────────────────────────────────────────────────────────
 app.use(
   "/api-docs",
   swaggerUi.serve,
@@ -107,10 +104,8 @@ app.use(
 
 app.get("/api-docs.json", (req, res) => res.json(swaggerSpec));
 
-// ─── Routes ───────────────────────────────────────────────────────────────────
 app.use(`/api/${API_VERSION}`, routes);
 
-// ─── Error Handling ───────────────────────────────────────────────────────────
 app.use(notFoundHandler);
 app.use(errorHandler);
 
