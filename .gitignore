@@ -12,3 +12,4 @@ coverage/
 .DEPLOYMENT.md
 *.md
 *.txt
+./Code.txt
