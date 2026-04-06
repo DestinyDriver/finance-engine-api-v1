@@ -14,7 +14,8 @@ const { apiLimiter } = require("./middleware/rateLimiter");
 require("dotenv").config();
 
 const app = express();
-
+// IMPORTANT for Railway / proxies
+app.set("trust proxy", 1);
 app.use(
   helmet({
     contentSecurityPolicy: {
