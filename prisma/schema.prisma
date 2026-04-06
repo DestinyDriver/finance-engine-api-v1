@@ -1,0 +1,70 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  ANALYST
+  VIEWER
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum TransactionType {
+  INCOME
+  EXPENSE
+}
+
+model User {
+  id         Int          @id @default(autoincrement())
+  email      String       @unique
+  password   String
+  firstName  String
+  lastName   String
+  role       Role         @default(VIEWER)
+  status     UserStatus   @default(ACTIVE)
+  transactions Transaction[]
+  refreshTokens RefreshToken[]
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+}
+
+
+model RefreshToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+model Category {
+  id          Int           @id @default(autoincrement())
+  name        String        @unique
+  description String?
+  color       String?
+  transactions Transaction[]
+}
+
+model Transaction {
+  id          Int             @id @default(autoincrement())
+  amount      Float
+  type        TransactionType
+  description String?
+  date        DateTime
+  category    Category         @relation(fields: [categoryId], references: [id])
+  categoryId  Int
+  user        User             @relation(fields: [userId], references: [id])
+  userId      Int
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+}
