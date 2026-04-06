@@ -1,9 +1,3 @@
-// src/utils/response.js
-/**
- * Standardized API response helpers
- * All responses follow: { success: bool, data/error, message, page?, total?, pageSize? }
- */
-
 const success = (res, data = null, message = "Success", statusCode = 200) => {
   return res.status(statusCode).json({
     success: true,

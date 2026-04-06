@@ -1,4 +1,3 @@
-// src/controllers/authController.js
 const authService = require("../services/authService");
 const response = require("../utils/response");
 const logger = require("../utils/logger");

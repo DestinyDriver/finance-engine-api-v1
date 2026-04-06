@@ -1,4 +1,3 @@
-// src/middleware/errorHandler.js
 const logger = require("../utils/logger");
 const response = require("../utils/response");
 

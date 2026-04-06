@@ -1,4 +1,3 @@
-// src/services/userService.js
 const bcrypt = require("bcryptjs");
 const { prisma } = require("../utils/database");
 const { invalidatePattern } = require("../utils/redis");
@@ -15,9 +14,8 @@ const USER_SELECT = {
   updatedAt: true,
 };
 
-/**
- * Get all users with pagination, search, and filtering
- */
+//  * Get all users with pagination, search, and filtering
+
 const getUsers = async ({
   page = 1,
   limit = 20,
@@ -56,9 +54,8 @@ const getUsers = async ({
   return { users, total };
 };
 
-/**
- * Get a single user by ID
- */
+//Get a single user by ID
+
 const getUserById = async (id) => {
   const user = await prisma.user.findFirst({
     where: { id, deletedAt: null },
@@ -77,9 +74,8 @@ const getUserById = async (id) => {
   return user;
 };
 
-/**
- * Update a user's profile (admin can update role/status, self can update name)
- */
+// date a user's profile (admin can update role/status, self can update name)
+
 const updateUser = async (id, updates, actorRole) => {
   const user = await prisma.user.findFirst({ where: { id, deletedAt: null } });
   if (!user) {
@@ -114,9 +110,7 @@ const updateUser = async (id, updates, actorRole) => {
   return updated;
 };
 
-/**
- * Soft-delete a user (admin only)
- */
+//soft delkete ---admin onluy
 const deleteUser = async (id, actorId) => {
   if (id === actorId) {
     const err = new Error("You cannot delete your own account");
@@ -146,9 +140,6 @@ const deleteUser = async (id, actorId) => {
   logger.info("User soft-deleted", { userId: id, deletedBy: actorId });
 };
 
-/**
- * Update a user's status
- */
 const updateUserStatus = async (id, status, actorId) => {
   if (id === actorId && status === "INACTIVE") {
     const err = new Error("You cannot deactivate your own account");
@@ -186,37 +177,3 @@ module.exports = {
   deleteUser,
   updateUserStatus,
 };
-
-//   const password = await bcrypt.hash(data.password, 10);
-//   const user = await prisma.user.create({
-//     data: {
-//       email: data.email,
-//       password,
-//       firstName: data.firstName,
-//       lastName: data.lastName,
-//       role: data.role,
-//       status: data.status || "ACTIVE",
-//     },
-//     select: {
-//       id: true,
-//       email: true,
-//       firstName: true,
-//       lastName: true,
-//       role: true,
-//       status: true,
-//       createdAt: true,
-//     },
-//   });
-//   return user;
-// };
-
-// exports.updateStatus = async (id, { status }) => {
-//   if (!["ACTIVE", "INACTIVE"].includes(status)) {
-//     const err = new Error("Invalid status");
-//     err.statusCode = 400;
-//     throw err;
-//   }
-//   return prisma.user.update({ where: { id }, data: { status } });
-// };
-
-// exports.deleteUser = async (id) => prisma.user.delete({ where: { id } });

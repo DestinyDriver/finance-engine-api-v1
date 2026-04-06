@@ -1,4 +1,3 @@
-// src/middleware/auth.js
 const jwt = require("jsonwebtoken");
 const { prisma } = require("../utils/database");
 const { redis } = require("../utils/redis");
@@ -78,10 +77,7 @@ const authenticate = async (req, res, next) => {
       .json({ success: false, message: "Authentication failed" });
   }
 };
-
-/**
- * Optional authentication - doesn't fail if no token
- */
+// optional authentication middleware for routes that can be accessed by both authenticated and unauthenticated users (e.g. public endpoints)
 const optionalAuthenticate = async (req, res, next) => {
   try {
     const token = req.headers.authorization?.split(" ")[1];
@@ -117,10 +113,8 @@ const optionalAuthenticate = async (req, res, next) => {
   }
 };
 
-/**
- * Role-based access control middleware factory
- * Usage: requireRole(ROLES.ADMIN, ROLES.ANALYST)
- */
+// Role-based access control middleware factory
+
 const requireRole = (...allowedRoles) => {
   return (req, res, next) => {
     if (!req.user) {
@@ -144,9 +138,7 @@ const requireRole = (...allowedRoles) => {
   };
 };
 
-/**
- * Shorthand role guards
- */
+// role gaurds for convenience
 const isAdmin = requireRole(ROLES.ADMIN);
 const isAnalystOrAbove = requireRole(ROLES.ANALYST, ROLES.ADMIN);
 const isViewerOrAbove = requireRole(ROLES.VIEWER, ROLES.ANALYST, ROLES.ADMIN);

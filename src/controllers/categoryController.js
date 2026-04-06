@@ -1,4 +1,3 @@
-// src/controllers/categoryController.js
 const { prisma } = require("../utils/database");
 const response = require("../utils/response");
 

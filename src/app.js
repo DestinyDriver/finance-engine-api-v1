@@ -15,13 +15,12 @@ require("dotenv").config();
 
 const app = express();
 
-// ─── Security ────────────────────────────────────────────────────────────────
 app.use(
   helmet({
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", "'unsafe-inline'"], // needed for swagger UI
+        scriptSrc: ["'self'", "'unsafe-inline'"],
         styleSrc: ["'self'", "'unsafe-inline'"],
         imgSrc: ["'self'", "data:", "https:"],
       },
@@ -29,7 +28,6 @@ app.use(
   }),
 );
 
-// ─── CORS ────────────────────────────────────────────────────────────────────
 app.use(
   cors({
     origin: process.env.CORS_ORIGIN || "*",

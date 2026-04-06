@@ -1,4 +1,3 @@
-// src/routes/transactions.js
 const express = require("express");
 const { body, param } = require("express-validator");
 const transactionController = require("../controllers/transactionController");
